@@ -1,3 +1,4 @@
+from time import time
 
 filenames = ["input1.txt", "input2.txt"]
 
@@ -14,16 +15,22 @@ def searchForBatteryN(banks, n):
 			bank_acc += digit*(10**i)
 			bank = bank[index+1:]
 		acc +=  bank_acc
-	print(acc)
+	return acc
 
 for f in filenames[:]:
 
 	# Part 1
+	ts = time()
 	n = 2
 	banks = open(f)
-	searchForBatteryN(banks, n)
+	ans =searchForBatteryN(banks, n)
+	te = time()
+	print("Execution time for %s part 1: %.4fs -- Answer: %d" % (f, te-ts, ans) )
 
 	# Part 2
+	ts = time()
 	n = 12
 	banks = open(f)
-	searchForBatteryN(banks, n)
+	ans = searchForBatteryN(banks, n)
+	te = time()
+	print("Execution time for %s part 2: %.4fs -- Answer: %d" % (f, te-ts, ans) )
