@@ -87,6 +87,21 @@ def part2(filename):
 			print(points[i1][0] * points[i2][0])
 
 
+def part2_v2(filename):
+
+	points = [ [int(x) for x in line.strip().split(",")] for line in open(filename)]
+	distmap = [[distance(p1,p2) for p2 in points] for p1 in points]
+	circuits = [[i] for i in range(len(points))]
+
+	shortest_dists = sorted([(min(distmap[i]),i) for i in range(len(distmap))])
+
+	sd = shortest_dists[-1]
+	i1 = sd[1]
+	i2 = distmap[i1].index(sd[0])
+
+	print(points[i1][0] * points[i2][0])
+
+
 
 
 
@@ -94,11 +109,11 @@ from time import time
 
 for filename in filenames[1:]:
 	ts = time()
-	part1(filename)
+	#part1(filename)
 	print("Part 1 time: %.3f(s)" %(time()-ts))
 
 	ts = time()
-	part2(filename)
+	part2_v2(filename)
 	print("Part 2 time: %.3f(s)" %(time()-ts))
 
 
