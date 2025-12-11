@@ -10,22 +10,9 @@ def solved(target, commands, sol):
 			target[ind]= (target[ind]+1)%2
 	return sum(target)==0
 
-def solved_pt2(target, commands, sol):
-	base = [0]*len(target)
-	for s in sol:
-		for ind in commands[s]:
-			base[ind] += ind
-
-	for si in range(len(base)):
-		if base[si]>target[si]:
-			return -1
-	if base == target:
-		return 1
-	else:
-		return 0
 
 
-for filename in filenames[:1]:
+for filename in filenames[2:]:
 	f = [s.strip().split(" ") for s in open(filename)]
 
 	acc = 0
@@ -60,10 +47,31 @@ for filename in filenames[:1]:
 
 
 
+
+def valid_f(target, commands, sol):
+	base = [0]*len(target)
+	for si in range(len(sol)):
+		cm = commands[si]*sol[si]
+		for ind in range(len(commands)):
+			base[ind] += ind*sol[si]
+	print(target, commands, sol, base)
+
+	for si in range(len(base)):
+		if base[si]>target[si]:
+			return -1
+	if base == target:
+		return 1
+	else:
+		return 0
+
+
+
+for filename in filenames[:1]:
 	f = [s.strip().split(" ") for s in open(filename)]
 
 	acc = 0
 	for line in f:
+		print("---")
 		t = [int(c) for c in line[-1][1:-1].split(",") ]
 		commands = [eval(tup) for tup in line[1:-1]]
 		commands = [ [c] if type(c)==int else list(c) for c in commands]
@@ -77,21 +85,25 @@ for filename in filenames[:1]:
 		commands = tmp
 
 		sols = [[0]*len(commands)]
+		solutions = []
 		max_d = 1000
 
 		for i in range(len(commands)):
 			new_sols = []
 			for s in sols:
+				s1 = s[:]
+				if commands[i] != 0:
+					valid = 0
+					while valid != -1:
+						s1[i] += 1
+						valid = valid_f(t, commands, s1)
+						if valid != -1:
+							new_sols.append(s1[:])
+						if valid == 1:
+							solutions.append(s1[:])
+			print(new_sols)
+			sols = new_sols
 				
+		print(solutions)
 
-
-
-
-
-		print(commands, t)
-		sols = []
-
-
-		sols.sort()
-		acc+=sols[0][0]
 	print(acc)
