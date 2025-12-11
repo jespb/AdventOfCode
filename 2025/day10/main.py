@@ -76,6 +76,17 @@ for filename in filenames[:1]:
 			tmp.append(v)
 		commands = tmp
 
+		sols = [[0]*len(commands)]
+		max_d = 1000
+
+		for i in range(len(commands)):
+			new_sols = []
+			for s in sols:
+				
+
+
+
+
 
 		print(commands, t)
 		sols = []
