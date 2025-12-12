@@ -69,6 +69,12 @@ def valid_f(target, commands, sol, max_clicks):
 	else:
 		return 0
 
+def dist_f(target, commands, sol):
+	base = apply_f(commands, sol)
+
+	return sum([abs(target[i]-base[i]) for i in range(len(base))])
+
+
 
 
 for filename in filenames[:]:
@@ -80,6 +86,10 @@ for filename in filenames[:]:
 		t = [int(c) for c in line[-1][1:-1].split(",") ]
 		commands = [eval(tup) for tup in line[1:-1]]
 		commands = [ [c] if type(c)==int else list(c) for c in commands]
+		commands = [ [len(c), c ] for c in commands]
+		commands.sort(reverse=True)
+		commands = [c[1] for c in commands]
+		print(commands)
 
 		tmp = []
 		for c in commands:
@@ -93,9 +103,14 @@ for filename in filenames[:]:
 		solutions = []
 		max_d = 1000
 
-		current_min = 20
+		current_min = 100000
 
 		for i in range(len(commands)):
+			print(len(sols))
+			sols = [ [dist_f(t, commands, c),c] for c in sols]
+			sols.sort()
+			sols = [ c[1] for c in sols][:100000]
+
 			new_sols = []
 			for s in sols:
 				s1 = s[:]
