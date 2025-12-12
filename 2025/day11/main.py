@@ -3,23 +3,16 @@ filenames = ["input1.txt", "input2.txt", "input3.txt"]
 
 
 def no_paths(dic, from_="you", to_="out"):
-	dup = {}
-	for key in dic.keys():
-		dup[key] = dic[key]
-	dic = dup
+	cached = dic[to_] if to_ != "out" else None
 	dic[to_]=""
 	del dic[to_]
 
 	dic_dist = {}
 	dic_dist["out"]=0
+	for key in dic.keys():
+		dic_dist[key]=0
 	dic_dist[to_]=1
-	for key in dic.keys():
-		if to_ in dic[key]:
-			dic_dist[key] = 1
 
-	for key in dic.keys():
-		if not key in dic_dist.keys():
-			dic_dist[key]=0
 
 	changed = True
 	while changed:
@@ -33,6 +26,8 @@ def no_paths(dic, from_="you", to_="out"):
 				dic_dist[key] = acc
 		dic_dist[to_]=1
 
+	if not cached is None:
+		dic[to_] = cached
 	return dic_dist[from_]
 
 
