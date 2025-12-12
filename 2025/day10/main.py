@@ -77,7 +77,7 @@ def dist_f(target, commands, sol):
 
 
 
-for filename in filenames[:]:
+for filename in filenames[2:]:
 	f = [s.strip().split(" ") for s in open(filename)]
 
 	acc = 0
@@ -138,3 +138,83 @@ for filename in filenames[:]:
 		acc += compress
 
 	print(acc)
+
+
+
+
+
+
+
+
+
+
+
+
+
+from random import randint
+
+def ga(commands, target):
+	best = None
+	p = [[0]*len(commands)]
+	for g in range(2000):
+		np = []
+		# evaluation
+		pev = []
+		for ind in p:
+			acc = [0]*len(target)
+			for wi in range(len(ind)):
+				for indi in range(len(target)):
+					acc[indi] += commands[wi][indi]*ind[wi]
+			fit = (sum([abs(acc[i]-target[i]) for i in range(len(acc))]), sum(ind))
+			pev.append([fit, ind])
+
+		pev.sort()
+
+		if best is None or pev[0]<best:
+			best = pev[0]
+
+		p = [ind[1] for ind in pev]
+
+
+		# breeding
+		for _ in range(100):
+			s = p[ min(randint(0, len(p)-1), randint(0, len(p)-1) ) ][:]
+			for z in range(len(s)):
+				if randint(0,4)==0:
+					s[ z ] += randint(-2,2)
+			s = [ max(i,0) for i in s]
+			np.append(s)
+
+		p = np
+
+	return best[0][1]
+
+
+
+for filename in filenames[1:]:
+	f = [s.strip().split(" ") for s in open(filename)]
+
+	acc = 0
+	for line_i in range(len(f)):
+		line = f[line_i]
+		print(line_i/len(f))
+		t = [int(c) for c in line[-1][1:-1].split(",") ]
+		commands = [eval(tup) for tup in line[1:-1]]
+		commands = [ [c] if type(c)==int else list(c) for c in commands]
+		commands = [ [len(c), c ] for c in commands]
+		commands.sort(reverse=True)
+		commands = [c[1] for c in commands]
+
+		tmp = []
+		for c in commands:
+			v = [0]*len(t)
+			for i in c:
+				v[i] = 1
+			tmp.append(v)
+		commands = tmp
+
+		acc+= ga(commands, t)
+	print(acc)
+
+# 16384 too low
+# 19085 too high
