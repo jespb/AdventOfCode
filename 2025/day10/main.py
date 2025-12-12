@@ -47,14 +47,19 @@ for filename in filenames[2:]:
 
 
 
-
-def valid_f(target, commands, sol):
-	base = [0]*len(target)
+def apply_f(commands, sol):
+	base = [0]*len(commands[0])
 	for si in range(len(sol)):
-		cm = commands[si]*sol[si]
-		for ind in range(len(commands)):
-			base[ind] += ind*sol[si]
-	print(target, commands, sol, base)
+		cm = [v*sol[si] for v in commands[si]]
+		for ind in range(len(cm)):
+			base[ind] += cm[ind]
+	return base
+
+def valid_f(target, commands, sol, max_clicks):
+	if sum(sol) > max_clicks:
+		return -1
+
+	base = apply_f(commands, sol)
 
 	for si in range(len(base)):
 		if base[si]>target[si]:
@@ -66,7 +71,7 @@ def valid_f(target, commands, sol):
 
 
 
-for filename in filenames[:1]:
+for filename in filenames[:]:
 	f = [s.strip().split(" ") for s in open(filename)]
 
 	acc = 0
@@ -88,22 +93,33 @@ for filename in filenames[:1]:
 		solutions = []
 		max_d = 1000
 
+		current_min = 20
+
 		for i in range(len(commands)):
 			new_sols = []
 			for s in sols:
 				s1 = s[:]
-				if commands[i] != 0:
-					valid = 0
-					while valid != -1:
-						s1[i] += 1
-						valid = valid_f(t, commands, s1)
-						if valid != -1:
-							new_sols.append(s1[:])
-						if valid == 1:
-							solutions.append(s1[:])
-			print(new_sols)
+				bl = apply_f(commands, s1)
+
+				valid = 0
+
+				while valid != -1:
+					valid = valid_f(t, commands, s1, current_min)
+					if valid != -1:
+						new_sols.append(s1[:])
+					if valid == 1:
+						solutions.append(s1[:])
+						if sum(s1) < current_min:
+							current_min = sum(s1)
+					s1[i] += 1
+
+
+			#print(new_sols)
 			sols = new_sols
 				
-		print(solutions)
+		compress = min([sum(s) for s in solutions])
+		print(compress)
+
+		acc += compress
 
 	print(acc)
